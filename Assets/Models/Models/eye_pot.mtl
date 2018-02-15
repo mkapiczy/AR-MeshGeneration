@@ -1,0 +1,11 @@
+# Blender MTL File: 'eye_pot.blend'
+# Material Count: 1
+newmtl EyePot
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.698947 0.698947 0.698947
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd eye_pot_tex.png
