@@ -22,7 +22,7 @@ public class SpaceshipScript : MonoBehaviour {
 		vertices[5] = new Vector3(-wingLength/5f, 0, -planeLength);
 		vertices[6] = new Vector3( wingLength/5f, 0, -planeLength);
 		vertices[7] = new Vector3( wingLength/5f, 0, -3 * planeLength/5f);
-		vertices[8] = new Vector3(-wingLength/5f, 0, -planeLength/5f);
+		vertices[8] = new Vector3(wingLength/5f, 0, -planeLength/5f);
 		vertices[9] = new Vector3( 3f * wingLength/5f, 0, -planeLength/5f);
 		vertices[10] = new Vector3( wingLength , 0, - planeLength/5f);
 		vertices[11] = new Vector3(3f * wingLength/5f, 0, planeLength/5f);
@@ -36,7 +36,7 @@ public class SpaceshipScript : MonoBehaviour {
 
 		mesh.vertices = vertices;
 
-		int[] triangles = new int[48];
+		int[] triangles = new int[51];
 		triangles[0] = 0;
 		triangles[1] = 1;
 		triangles[2] = 2;
@@ -55,9 +55,9 @@ public class SpaceshipScript : MonoBehaviour {
 		triangles[15] = 3;
 		triangles[16] = 7;
 		triangles[17] = 8;
-		triangles[18] = 12;
-		triangles [19] = 8;
-		triangles [20] = 9;
+		triangles[18] = 8;
+		triangles [19] = 9;
+		triangles [20] = 12;
 		triangles [21] = 12;
 		triangles [22] = 9;
 		triangles [23] = 11;
@@ -74,19 +74,20 @@ public class SpaceshipScript : MonoBehaviour {
 		triangles [34] = 12;
 		triangles [35] = 13;
 		triangles [36] = 17;
-		triangles [37] = 12;
-		triangles [38] = 5;
+		triangles [37] = 5;
+		triangles [38] = 12;
 		triangles [39] = 16;
 		triangles [40] = 13;
 		triangles [41] = 14;
-
 		triangles [42] = 16;
 		triangles [43] = 17;
 		triangles [44] = 13;
-
 		triangles [45] = 15;
 		triangles [46] = 16;
 		triangles [47] = 14;
+		triangles [48] = 0;
+		triangles [49] = 3;
+		triangles [50] = 18;
 
 		mesh.triangles = triangles;
 
