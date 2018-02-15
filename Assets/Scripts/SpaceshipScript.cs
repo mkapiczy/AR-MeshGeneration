@@ -6,6 +6,8 @@ public class SpaceshipScript : MonoBehaviour {
 
 	public float wingLength = 10f;
 	public float planeLength = 20f;
+	public float width = 4;
+	public float height = 4;
 
 	private MeshFilter mf;
 
@@ -34,60 +36,70 @@ public class SpaceshipScript : MonoBehaviour {
 		vertices[17] = new Vector3( - wingLength/5f, 0, 3 * planeLength/5f);
 		vertices[18] = new Vector3( -wingLength/5f, 0, planeLength/5f);
 
+
 		mesh.vertices = vertices;
 
+	
 		int[] triangles = new int[51];
 		triangles[0] = 0;
-		triangles[1] = 1;
-		triangles[2] = 2;
+		triangles[1] = 2;
+		triangles[2] = 1;
 		triangles[3] = 0;
-		triangles[4] = 2;
-		triangles[5] = 3;
+		triangles[4] = 3;
+		triangles[5] = 2;
 		triangles[6] = 3;
-		triangles[7] = 4;
-		triangles[8] = 7;
+		triangles[7] = 7;
+		triangles[8] = 4;
 		triangles[9] = 4;
-		triangles[10] = 5;
-		triangles[11] = 6;
+		triangles[10] = 6;
+		triangles[11] = 5;
 		triangles[12] = 4;
-		triangles[13] = 6;
-		triangles[14] = 7;
+		triangles[13] = 7;
+		triangles[14] = 6;
 		triangles[15] = 3;
-		triangles[16] = 7;
-		triangles[17] = 8;
+		triangles[16] = 8;
+		triangles[17] = 7;
 		triangles[18] = 8;
-		triangles [19] = 9;
-		triangles [20] = 12;
+		triangles [19] = 12;
+		triangles [20] = 9;
 		triangles [21] = 12;
-		triangles [22] = 9;
-		triangles [23] = 11;
+		triangles [22] = 11;
+		triangles [23] = 9;
 		triangles [24] = 11;
-		triangles [25] = 9;
-		triangles [26] = 10;
+		triangles [25] = 10;
+		triangles [26] = 9;
 		triangles [27] = 18;
-		triangles [28] = 3;
-		triangles [29] = 8;
+		triangles [28] = 8;
+		triangles [29] = 3;
 		triangles [30] = 18;
-		triangles [31] = 8;
-		triangles [32] = 12;
+		triangles [31] = 12;
+		triangles [32] = 8;
 		triangles [33] = 17;
-		triangles [34] = 12;
-		triangles [35] = 13;
+		triangles [34] = 13;
+		triangles [35] = 12;
 		triangles [36] = 17;
-		triangles [37] = 5;
-		triangles [38] = 12;
+		triangles [37] = 12;
+		triangles [38] = 5;
 		triangles [39] = 16;
-		triangles [40] = 13;
-		triangles [41] = 14;
+		triangles [40] = 14;
+		triangles [41] = 13;
 		triangles [42] = 16;
-		triangles [43] = 17;
-		triangles [44] = 13;
+		triangles [43] = 13;
+		triangles [44] = 17;
 		triangles [45] = 15;
-		triangles [46] = 16;
-		triangles [47] = 14;
+		triangles [46] = 14;
+		triangles [47] = 16;
 		triangles [48] = 0;
-		triangles [49] = 3;
-		triangles [50] = 18;
+		triangles [49] = 18;
+		triangles [50] = 3;
+
+		Color[] colors = new Color[vertices.Length];
+
+		for (int i = 0; i < vertices.Length; i++)
+			colors[i] = Color.Lerp(Color.red, Color.green, vertices[i].y);
+
+		// assign the array of colors to the Mesh.
+		mesh.colors = colors;
 
 		mesh.triangles = triangles;
 
@@ -95,17 +107,10 @@ public class SpaceshipScript : MonoBehaviour {
 
 		mf = GetComponent<MeshFilter> ();
 		mf.mesh = mesh;
-//		Vector2[] uv = new Vector2[4];
-//		uv[0] = new Vector2(0, 0);
-//		uv[1] = new Vector2(1, 0);
-//		uv[2] = new Vector2(0, 1);
-//		uv[3] = new Vector2(1, 1);
-//
-//		mesh.uv = uv;
-
-
 	}
-	
+
+
+
 	// Update is called once per frame
 	void Update () {
 		
