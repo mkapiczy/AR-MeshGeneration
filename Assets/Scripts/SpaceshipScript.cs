@@ -10,15 +10,14 @@ public class SpaceshipScript : MonoBehaviour {
 	private bool moveWingsUp = true;
 	private float wingMovementIncrement = 0.1f;
 	private float wingMovementThreshold = 2;
+	private Color materialColor;
 
 	// Use this for initializatn
 	void Start () {
+		materialColor = GetComponent<MeshRenderer> ().material.color;
 		InitializeMesh ();
-	}
-
-	// Update is called once per frame
-	void Update () {
-		InvokeRepeating("MoveWings", 0.0f, 0.0f);
+		InvokeRepeating("MoveWings", 0.0f, 0.05f);
+		InvokeRepeating ("Blink", 0.0f, 1.0f);
 	}
 
 	void InitializeMesh () {
@@ -26,6 +25,7 @@ public class SpaceshipScript : MonoBehaviour {
 		mesh.vertices = defineVertices ();
 		mesh.triangles = defineTrangles();
 		mesh.RecalculateNormals();
+		mesh.colors = InitializeColors (mesh.vertexCount);
 		MeshFilter mf = GetComponent<MeshFilter> ();
 		mf.mesh = mesh;
 	}
@@ -58,6 +58,33 @@ public class SpaceshipScript : MonoBehaviour {
 			moveWingsUp = true;
 
 		mf.mesh.vertices = vertices;
+	}
+
+	void Blink () {
+		Debug.Log ("Blink");
+		MeshFilter mf = GetComponent<MeshFilter> ();
+		Vector3[] vertices = mf.mesh.vertices;
+		Color[] colors = mf.mesh.colors;
+
+		if (colors [1] != Color.yellow) {
+			colors [1] = Color.yellow;
+			colors [10] = Color.yellow;
+			colors [15] = Color.blue;
+		} else {
+			colors [1] = materialColor;
+			colors [10] = materialColor;
+			colors [15] = materialColor;
+		}
+
+		mf.mesh.colors = colors;
+	}
+
+	Color[] InitializeColors(int verticesCount) {
+		Color[] colors = new Color[verticesCount];
+		for (int i = 0; i < verticesCount; i++) {
+			colors [i] = materialColor;
+		}
+		return colors;
 	}
 
 	Vector3[] defineVertices (){

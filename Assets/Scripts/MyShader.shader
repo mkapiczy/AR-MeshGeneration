@@ -1,6 +1,6 @@
 ﻿Shader "Custom/MyShader" {
     Properties {
-        _Color ("Main Color", Color) = (256,1,1,0.5)
+        _Color ("Main Color", Color) = (1,1,1,0.5)
         _MainTex ("Texture", 2D) = "white" { }
     }
     SubShader
@@ -17,36 +17,42 @@
             // For TRANSFORM_TEXT	
             #include "UnityCG.cginc"
 
-            fixed4 _Color;
+            float4 _Color;
             // Main texture
             sampler2D _MainTex;
             float4 _MainTex_ST;
 
             // VertexInput
-            struct appdata {
-                float4 pos : POSITION;
-                float2 uv : TEXCOORD0;
+            struct VertIn {
+                float4 position : POSITION;
+                float4 color : COLOR;
             };
 
             // Vertex Output
-            struct v2f {
-                float2 uv : TEXCOORD0;
-                float4 pos : SV_POSITION;
+            struct VertOut {
+                float4 position : POSITION;
+                float4 color : COLOR;
             };
 
-            v2f vert (appdata v) {
-                v2f o;
+            VertOut vert (VertIn i) {
+                VertOut o;
                 // Transforms a point from object space to the camera’s clip space in homogeneous coordinates. This is 
                 // the equivalent of mul(UNITY_MATRIX_MVP, float4(pos, 1.0)), and should be used in its place.
-                o.pos = UnityObjectToClipPos(v.pos);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.position = UnityObjectToClipPos(i.position);
+                o.color = i.color;
                 return o;
             }
+
+            struct FragOut {
+            	float4 color : COLOR;
+            };
             
-            fixed4 frag (v2f i) : SV_Target {
+            FragOut frag (VertOut i) : SV_Target {
+                FragOut o;
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
-                return (col * _Color);
+                o.color = tex2D(_MainTex, i.color);
+                o.color = (i.color);
+                return o;
             }
             ENDCG
         }
