@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class SpaceshipScript : MonoBehaviour {
 
-	public float wingLength = 10f;
+	public float wingLength = 50f;
 	public float planeLength = 20f;
-	public float width = 4;
-	public float height = 4;
+	public float planeLengthBack = 30f;
 
 	private MeshFilter mf;
 
@@ -17,16 +16,16 @@ public class SpaceshipScript : MonoBehaviour {
 
 		Vector3[] vertices = new Vector3[19];
 		vertices[0] = new Vector3(-3f * wingLength/5f, 0, planeLength/5f);
-		vertices[1] = new Vector3(-wingLength , 0, - planeLength/5f);
-		vertices[2] = new Vector3(-3f * wingLength/5f, 0, -planeLength/5f);
-		vertices[3] = new Vector3(-wingLength/5f, 0, -planeLength/5f);
-		vertices[4] = new Vector3(-wingLength/5f, 0, -3 * planeLength/5f);
-		vertices[5] = new Vector3(-wingLength/5f, 0, -planeLength);
-		vertices[6] = new Vector3( wingLength/5f, 0, -planeLength);
-		vertices[7] = new Vector3( wingLength/5f, 0, -3 * planeLength/5f);
-		vertices[8] = new Vector3(wingLength/5f, 0, -planeLength/5f);
-		vertices[9] = new Vector3( 3f * wingLength/5f, 0, -planeLength/5f);
-		vertices[10] = new Vector3( wingLength , 0, - planeLength/5f);
+		vertices[1] = new Vector3(-wingLength , 0, - planeLengthBack/5f);
+		vertices[2] = new Vector3(-3f * wingLength/5f, 0, -planeLengthBack/5f);
+		vertices[3] = new Vector3(-wingLength/5f, 0, -planeLengthBack/5f);
+		vertices[4] = new Vector3(-wingLength/5f, 0, -3 * planeLengthBack/5f);
+		vertices[5] = new Vector3(-wingLength/5f, 0, -planeLengthBack);
+		vertices[6] = new Vector3( wingLength/5f, 0, -planeLengthBack);
+		vertices[7] = new Vector3( wingLength/5f, 0, -3 * planeLengthBack/5f);
+		vertices[8] = new Vector3(wingLength/5f, 0, -planeLengthBack/5f);
+		vertices[9] = new Vector3( 3f * wingLength/5f, 0, -planeLengthBack/5f);
+		vertices[10] = new Vector3( wingLength , 0, - planeLengthBack/5f);
 		vertices[11] = new Vector3(3f * wingLength/5f, 0, planeLength/5f);
 		vertices[12] = new Vector3( wingLength/5f, 0, planeLength/5f);
 		vertices[13] = new Vector3( wingLength/5f, 0, 3 * planeLength/5f);
