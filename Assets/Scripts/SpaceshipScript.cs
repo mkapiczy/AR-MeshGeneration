@@ -7,13 +7,60 @@ public class SpaceshipScript : MonoBehaviour {
 	public float wingLength = 50f;
 	public float planeLength = 20f;
 	public float planeLengthBack = 30f;
+	private bool moveWingsUp = true;
+	private float wingMovementIncrement = 0.1f;
+	private float wingMovementThreshold = 2;
 
-	private MeshFilter mf;
-
-	// Use this for initialization
+	// Use this for initializatn
 	void Start () {
-		Mesh mesh = new Mesh();
+		InitializeMesh ();
+	}
 
+	// Update is called once per frame
+	void Update () {
+		InvokeRepeating("MoveWings", 0.0f, 0.0f);
+	}
+
+	void InitializeMesh () {
+		Mesh mesh = new Mesh();
+		mesh.vertices = defineVertices ();
+		mesh.triangles = defineTrangles();
+		mesh.RecalculateNormals();
+		MeshFilter mf = GetComponent<MeshFilter> ();
+		mf.mesh = mesh;
+	}
+
+	void MoveWings () {
+		Debug.Log ("Moving wings");
+		MeshFilter mf = GetComponent<MeshFilter> ();
+		Vector3[] vertices = mf.mesh.vertices;
+		if (moveWingsUp) {
+			vertices [0].y += wingMovementIncrement;
+			vertices [1].y += wingMovementIncrement;
+			vertices [2].y += wingMovementIncrement;
+
+			vertices [10].y += wingMovementIncrement;
+			vertices [11].y += wingMovementIncrement;
+			vertices [9].y += wingMovementIncrement;
+		} else {
+			vertices [0].y -= wingMovementIncrement;
+			vertices [1].y -= wingMovementIncrement;
+			vertices [2].y -= wingMovementIncrement;
+
+			vertices [10].y -= wingMovementIncrement;
+			vertices [11].y -= wingMovementIncrement;
+			vertices [9].y -= wingMovementIncrement;
+		}
+
+		if (vertices [0].y >= vertices [3].y + wingMovementThreshold)
+			moveWingsUp = false;
+		if (vertices [0].y <= vertices [3].y - wingMovementThreshold)
+			moveWingsUp = true;
+
+		mf.mesh.vertices = vertices;
+	}
+
+	Vector3[] defineVertices (){
 		Vector3[] vertices = new Vector3[19];
 		vertices[0] = new Vector3(-3f * wingLength/5f, 0, planeLength/5f);
 		vertices[1] = new Vector3(-wingLength , 0, - planeLengthBack/5f);
@@ -34,11 +81,10 @@ public class SpaceshipScript : MonoBehaviour {
 		vertices[16] = new Vector3( - wingLength/5f, 0, planeLength);
 		vertices[17] = new Vector3( - wingLength/5f, 0, 3 * planeLength/5f);
 		vertices[18] = new Vector3( -wingLength/5f, 0, planeLength/5f);
+		return vertices;
+	}
 
-
-		mesh.vertices = vertices;
-
-	
+	int[] defineTrangles(){
 		int[] triangles = new int[51];
 		triangles[0] = 0;
 		triangles[1] = 2;
@@ -91,27 +137,6 @@ public class SpaceshipScript : MonoBehaviour {
 		triangles [48] = 0;
 		triangles [49] = 18;
 		triangles [50] = 3;
-
-		Color[] colors = new Color[vertices.Length];
-
-		for (int i = 0; i < vertices.Length; i++)
-			colors[i] = Color.Lerp(Color.red, Color.green, vertices[i].y);
-
-		// assign the array of colors to the Mesh.
-		mesh.colors = colors;
-
-		mesh.triangles = triangles;
-
-		mesh.RecalculateNormals ();
-
-		mf = GetComponent<MeshFilter> ();
-		mf.mesh = mesh;
-	}
-
-
-
-	// Update is called once per frame
-	void Update () {
-		
+		return triangles;
 	}
 }
