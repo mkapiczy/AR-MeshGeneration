@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="desert-soil-2" size="12.500000 8.365385" />
+    <ImageTarget name="rocks2" size="12.500000 8.333333" />
+    <ImageTarget name="rocks" size="8.000000 5.333333" />
+    <ImageTarget name="terrain" size="17.000000 16.981642" />
+    <ImageTarget name="desert-soil" size="26.000000 17.400000" />
+  </Tracking>
+</QCARConfig>
