@@ -19,12 +19,12 @@ public class TerrainPerlin : ProcTerrain
 	/// 
 	/// Never use a whole number.
 	/// </summary>
-	public float m_NoiseScale = 1.1f;
+	private float m_NoiseScale = 0.1f;
 
 	/// <summary>
 	/// The number of noise layers. The more layers, the more fine detail. Leave at 1 for un-layered noise.
 	/// </summary>
-	public int m_LayerCount = 1;
+	private int m_LayerCount = 1;
 
 	/// <summary>
 	/// Get the height of the terrain at any given position in local space.
@@ -34,12 +34,15 @@ public class TerrainPerlin : ProcTerrain
 	/// <returns>A height value in local space.</returns>
 	protected override float GetY(float x, float z)
 	{
+		Debug.Log (m_Height);
+
 		if (m_LayerCount <= 1)
 		{
 			//simple noise:
 			float perlinX = x * m_NoiseScale;
 			float perlinZ = z * m_NoiseScale;
 			return Mathf.PerlinNoise(perlinX, perlinZ) * m_Height;
+
 		}
 		else
 		{
@@ -62,4 +65,5 @@ public class TerrainPerlin : ProcTerrain
 			return (y / totalPossibleSum) * m_Height;
 		}
 	}
+
 }

@@ -46,10 +46,12 @@ MonoBehaviour:
     dataSetsToLoad:
     - VuforiaMars_Images
     - VuforiaMars_VuMark
+    - 2aPartD
     - Spaceship
     dataSetsToActivate:
     - VuforiaMars_Images
     - VuforiaMars_VuMark
+    - 2aPartD
     - Spaceship
   videoBackground:
     clippingMode: 0

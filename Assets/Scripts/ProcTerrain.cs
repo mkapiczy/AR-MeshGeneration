@@ -17,17 +17,17 @@ public abstract class ProcTerrain : MonoBehaviour
 	/// <summary>
 	/// The maximum height of the terrain.
 	/// </summary>
-	public float m_Height = 1.0f;
+	protected float m_Height = 1.0f;
 
 	/// <summary>
 	/// The width/length, in world units, of the terrain.
 	/// </summary>
-	public float m_Width = 20.0f;
+	protected float m_Width = 20.0f;
 	
 	/// <summary>
 	/// The number of mesh segments (in one dimension) of the terrain.
 	/// </summary>
-	public int m_SegmentCount = 100;
+	public int m_SegmentCount = 10000;
 
 	/// <summary>
 	/// Get the height of the terrain at any given position in local space.
@@ -44,6 +44,14 @@ public abstract class ProcTerrain : MonoBehaviour
 	/// <param name="zPosition">The Z position.</param>
 	/// <param name="yOffset">The required Y offset.</param>
 	/// <returns>A position in world space.</returns>
+	/// 
+	/// 
+	/// 
+
+	private MeshBuilder meshBuilder;
+	private Mesh mesh;
+	private float segmentSize;
+
 	public Vector3 GetWorldPosition(float xPosition, float zPosition, float yOffset)
 	{
 		Vector3 localGroundPos = transform.worldToLocalMatrix.MultiplyPoint3x4(new Vector3(xPosition, 0.0f, zPosition));
@@ -57,9 +65,9 @@ public abstract class ProcTerrain : MonoBehaviour
 	/// </summary>
 	protected virtual void Start()
 	{
-		MeshBuilder meshBuilder = new MeshBuilder();
+		meshBuilder = new MeshBuilder();
 
-		float segmentSize = m_Width / m_SegmentCount;
+		segmentSize = m_Width / m_SegmentCount;
 
 		for (int i = 0; i <= m_SegmentCount; i++)
 		{
@@ -80,7 +88,7 @@ public abstract class ProcTerrain : MonoBehaviour
 			}
 		}
 
-		Mesh mesh = meshBuilder.CreateMesh();
+		mesh = meshBuilder.CreateMesh();
 
 		mesh.RecalculateNormals();
 
@@ -120,5 +128,16 @@ public abstract class ProcTerrain : MonoBehaviour
 			meshBuilder.AddTriangle(index0, index2, index1);
 			meshBuilder.AddTriangle(index2, index3, index1);
 		}
+	}
+		
+	void Update(){
+		m_Width = m_Width + 1;
+		segmentSize = m_Width / m_SegmentCount;
+	
+
+		mesh = meshBuilder.CreateMesh();
+
+		mesh.RecalculateNormals();
+
 	}
 }
