@@ -19,7 +19,7 @@ public class TerrainPerlin : ProcTerrain
 	/// 
 	/// Never use a whole number.
 	/// </summary>
-	private float m_NoiseScale = 0.1f;
+	private float m_NoiseScale = 1.1f;
 
 	/// <summary>
 	/// The number of noise layers. The more layers, the more fine detail. Leave at 1 for un-layered noise.

@@ -65,6 +65,10 @@ public abstract class ProcTerrain : MonoBehaviour
 	/// </summary>
 	protected virtual void Start()
 	{
+		createTerrain ();
+	}
+
+	private void createTerrain(){
 		meshBuilder = new MeshBuilder();
 
 		segmentSize = m_Width / m_SegmentCount;
@@ -102,7 +106,6 @@ public abstract class ProcTerrain : MonoBehaviour
 			filter.sharedMesh = mesh;
 		}
 	}
-
 	/// <summary>
 	/// Builds a single quad as part of a mesh grid.
 	/// </summary>
@@ -131,13 +134,31 @@ public abstract class ProcTerrain : MonoBehaviour
 	}
 		
 	void Update(){
-		m_Width = m_Width + 1;
-		segmentSize = m_Width / m_SegmentCount;
-	
+		if (Input.GetKey ("up")) {
+			MeshFilter filter = GetComponent<MeshFilter>();
+			m_SegmentCount++;
+			m_Width++;
 
-		mesh = meshBuilder.CreateMesh();
+			float z = segmentSize * (m_SegmentCount - 1);
+			float v = (1.0f / m_SegmentCount) * (m_SegmentCount - 1);
 
-		mesh.RecalculateNormals();
+			Debug.Log (m_SegmentCount);
+			for (int i = 0; i <= m_SegmentCount; i++) {
+				float x = segmentSize * i;
+				float u = (1.0f / m_SegmentCount) * i;
 
+				Vector3 offset = new Vector3 (x, GetY (x, z), z);
+
+				Vector2 uv = new Vector2 (u, v);
+
+				BuildQuadForGrid (meshBuilder, offset, uv, i>0, m_SegmentCount + 1);
+			}
+				
+			mesh = meshBuilder.CreateMesh();
+
+			mesh.RecalculateNormals();
+
+			filter.sharedMesh = mesh;
+		}
 	}
 }
