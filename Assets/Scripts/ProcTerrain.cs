@@ -16,7 +16,7 @@ public abstract class ProcTerrain : MonoBehaviour
 	protected abstract float GetY(float x, float z);
 
 	private Mesh mesh;
-	private float segmentSizeX = 1f;
+	private float segmentSizeX = 0.5f;
 	private float segmentSizeZ = 0.5f;
 
 	private Terrain terrain;

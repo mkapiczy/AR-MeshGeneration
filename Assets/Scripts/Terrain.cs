@@ -48,13 +48,13 @@ public class Terrain
 //		Debug.Log("Vertice row " + this.verticeRows[0].Count);
 //		Debug.Log ("Mesh vertices " + this.meshVertices.Count);
 
-		this.meshVertices.RemoveRange (this.meshVertices.Count - 1 - this.verticeRows [0].Count, this.verticeRows [0].Count);
+		this.meshVertices.RemoveRange (this.meshVertices.Count - this.verticeRows [0].Count, this.verticeRows [0].Count);
 //		Debug.Log(this.meshVertices.Count);
 
 //		this.meshUvs.RemoveRange (this.meshUvs.Count - 1 - this.uvsRows [0].Count, this.uvsRows [0].Count);
 //		Debug.Log ("Triangles " + this.meshTriangles.Count + " | " + this.rows[1].Count);
 
-		this.meshTriangles.RemoveRange (this.meshTriangles.Count - 1 - this.quadRows [1].Count * 2 *3, this.quadRows [1].Count * 2*3);
+		this.meshTriangles.RemoveRange (this.meshTriangles.Count - this.quadRows [1].Count * 2 *3, this.quadRows [1].Count * 2*3);
 //		Debug.Log ("Triangles " + this.meshTriangles.Count);
 	}
 
