@@ -36,6 +36,8 @@ public class MeshBuilder
 	//indices for the triangles:
 	private List<int> m_Indices = new List<int>();
 
+	
+
 	/// <summary>
 	/// Adds a triangle to the mesh.
 	/// </summary>
