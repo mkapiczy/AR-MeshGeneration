@@ -1,10 +1,3 @@
-///
-/// Modelling by numbers
-/// An introduction to procedural geometry
-/// 
-/// By Jayelinda Suridge
-/// http://jayelinda.com
-///
 
 using UnityEngine;
 using System.Collections;

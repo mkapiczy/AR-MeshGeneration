@@ -4,111 +4,89 @@ using UnityEngine;
 
 public class Terrain
 {
-	public List<List<Quad>> quadRows = new List<List<Quad>>();
-	public List<List<Vector3>> verticeRows = new List<List<Vector3>>();
-	public List<List<Vector2>> uvsRows = new List<List<Vector2>>();
-
+	private int rowsNumber;
+	private int columnsNumber;
 	public List<Vector3> meshVertices = new List<Vector3> ();
 	public List<Vector2> meshUvs = new List<Vector2> ();
 	public List<int> meshTriangles = new List<int> ();
+
 	public Mesh mesh;
 
-	public Terrain(){
-		this.quadRows = new List<List<Quad>> ();
+	public Terrain(int columnsNumber){
 		this.mesh = new Mesh ();
+		this.rowsNumber = 0;
+		this.columnsNumber = columnsNumber;
 	}
 
-	public void addRow(List<Quad> row, List<Vector3> verticeRow, List<Vector2> uvsRow){
-//		Debug.Log ("Quads: " + row.Count);
-//		Debug.Log ("vertices: " + verticeRow.Count);
-//		Debug.Log ("uvs: " + uvsRow.Count);
-		this.verticeRows.Add (verticeRow);
-		this.uvsRows.Add (uvsRow);
-		this.quadRows.Add (row);
-
+	public void addRow( List<Vector3> verticeRow, List<Vector2> uvsRow){
+		this.rowsNumber++;
 		this.meshVertices.AddRange (verticeRow);
-//		this.meshUvs.AddRange (uvsRow);
-		foreach (Quad quad in row) {
-			this.meshTriangles.Add (quad.triangle1.vertex1);
-			this.meshTriangles.Add (quad.triangle1.vertex2);
-			this.meshTriangles.Add (quad.triangle1.vertex3);
+	}
 
-			this.meshTriangles.Add (quad.triangle2.vertex1);
-			this.meshTriangles.Add (quad.triangle2.vertex2);
-			this.meshTriangles.Add (quad.triangle2.vertex3);
+	public void addColumn(List<Vector3> verticeColumn, List<Vector2> uvsColumn) {
+		if (verticeColumn.Count == this.rowsNumber) {
+			for (int i = 0; i < this.rowsNumber; i++) {
+				int insertPosition = (i * this.columnsNumber) + (this.columnsNumber + i);
+				Debug.Log ("Inserting " + i + " at position " + insertPosition);
+				this.meshVertices.Insert (insertPosition, verticeColumn [i]);
+			}
+			this.columnsNumber++;
+		} else {
+			Debug.LogError ("Vertice column count is different the rows count " + verticeColumn.Count + " | " + this.rowsNumber);
 		}
+	}
 
+	public void removeColumn(){
+		for (int i = this.rowsNumber; i > 0; i--) {
+			int removePosition = (i * this.columnsNumber) -1 ;
+			Debug.Log ("Removing column " + this.columnsNumber + " at position " + removePosition + " in row " + i);
+			this.meshVertices.RemoveAt (removePosition);
+		}
+		this.columnsNumber--;
 	}
 
 	public void removeRow(){
-		this.verticeRows.RemoveAt (this.verticeRows.Count - 1);
-		this.uvsRows.RemoveAt (this.uvsRows.Count - 1);
-		this.quadRows.RemoveAt (this.quadRows.Count-1);
-
-//		Debug.Log("Vertice row " + this.verticeRows[0].Count);
-//		Debug.Log ("Mesh vertices " + this.meshVertices.Count);
-
-		this.meshVertices.RemoveRange (this.meshVertices.Count - this.verticeRows [0].Count, this.verticeRows [0].Count);
-//		Debug.Log(this.meshVertices.Count);
-
-//		this.meshUvs.RemoveRange (this.meshUvs.Count - 1 - this.uvsRows [0].Count, this.uvsRows [0].Count);
-//		Debug.Log ("Triangles " + this.meshTriangles.Count + " | " + this.rows[1].Count);
-
-		this.meshTriangles.RemoveRange (this.meshTriangles.Count - this.quadRows [1].Count * 2 *3, this.quadRows [1].Count * 2*3);
-//		Debug.Log ("Triangles " + this.meshTriangles.Count);
+		this.meshVertices.RemoveRange (this.meshVertices.Count - this.columnsNumber, this.columnsNumber);
+		this.rowsNumber--;
 	}
 
-	public Quad BuildQuadForGrid(bool buildTriangles, int vertsPerRow, int verticeCount) {
-
-		if (buildTriangles)
-		{
-			int baseIndex = verticeCount - 1;
-
-			int index0 = baseIndex;
-			int index1 = baseIndex - 1;
-			int index2 = baseIndex - vertsPerRow;
-			int index3 = baseIndex - vertsPerRow - 1;
-
-			Triangle triangle1 = new Triangle (index0, index2, index1);
-			Triangle triangle2 = new Triangle (index2, index3, index1);
-
-			Quad quad = new Quad (triangle1, triangle2);
-
-
-			return quad;
+	private void BuildMeshTriangles() {
+		this.meshTriangles = new List<int> ();
+		for (int i = this.meshVertices.Count - 1; i > 0; i--) {
+			if (i > this.columnsNumber && (this.meshVertices.Count-i)%this.columnsNumber!=0 ) {
+				int baseIndex = i;
+				int index0 = baseIndex;
+				int index1 = baseIndex - 1;
+				int index2 = baseIndex - this.columnsNumber;
+				int index3 = baseIndex - this.columnsNumber - 1;
+				Debug.Log ("Indexes " + index0 + " " + index1 + " " + index2 + " " + index3);
+				int[] triangle1 = { index0, index2, index1 };
+				this.meshTriangles.AddRange(triangle1);
+				int[] triangle2 = { index2, index3, index1 };
+				this.meshTriangles.AddRange (triangle2);
+			}
 		}
 
-		return null;
 	}
 		
 	public Mesh UpdateMesh() {
 
-		//add our vertex and triangle values to the new mesh:
-		Debug.Log ("Vertices1: " + meshVertices.ToArray().Length);
-		Debug.Log ("Vertices2: " + mesh.vertices.Length);
 
-		mesh.vertices = meshVertices.ToArray();
-
-		Debug.Log ("Triangles1: " + meshTriangles.ToArray ().Length);
-		Debug.Log ("Triangles2: " + mesh.triangles.Length);
-		mesh.triangles = meshTriangles.ToArray ();
+		this.BuildMeshTriangles ();
+		Mesh newMesh = new Mesh ();
+		Debug.Log ("Vertices: " + meshVertices.Count + " Triangles " + meshTriangles.Count);
+		newMesh.vertices = meshVertices.ToArray();
+		newMesh.triangles = meshTriangles.ToArray ();
 
 //		mesh.uv = meshUvs.ToArray ();
 
-		//Normals are optional. Only use them if we have the correct amount:
-//		if (m_Normals.Count == m_Vertices.Count)
-//			mesh.normals = m_Normals.ToArray();
-//
-//		//UVs are optional. Only use them if we have the correct amount:
-//		if (m_UVs.Count == m_Vertices.Count)
-//			mesh.uv = m_UVs.ToArray();
-
-		mesh.RecalculateNormals ();
+		newMesh.RecalculateNormals ();
 
 		//have the mesh recalculate its bounding box (required for proper rendering):
-		mesh.RecalculateBounds();
+//		newMesh.RecalculateBounds();
+		this.mesh = newMesh;
 
-		return mesh;
+		return this.mesh;
 	}
 
 }

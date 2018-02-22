@@ -10,8 +10,8 @@ public abstract class ProcTerrain : MonoBehaviour
 	protected float m_Height = 1.0f;
 	
 	/// The number of mesh segments (in one dimension) of the terrain.
-	protected int segmentsCountX = 40;
-	protected int segmentsCountZ = 40;
+	protected int segmentsCountX = 4;
+	protected int segmentsCountZ = 4;
 
 	protected abstract float GetY(float x, float z);
 
@@ -35,11 +35,9 @@ public abstract class ProcTerrain : MonoBehaviour
 
 	private void createTerrain() {
 		
-		int verticeCount = 0;
-		terrain = new Terrain ();
+		terrain = new Terrain (segmentsCountX+1);
 
 		for (int i = 0; i <= segmentsCountZ; i++) {
-			List<Quad> row = new List<Quad> ();
 			List<Vector3> verticeRow = new List<Vector3> ();
 			List<Vector2> uvsRow = new List<Vector2> ();
 
@@ -47,7 +45,6 @@ public abstract class ProcTerrain : MonoBehaviour
 			float v = (1.0f / segmentsCountZ) * i;
 
 			for (int j = 0; j <= segmentsCountX; j++) {
-				verticeCount++;
 
 				float x = segmentSizeX * j;
 				float u = (1.0f / segmentsCountX) * j;
@@ -58,13 +55,8 @@ public abstract class ProcTerrain : MonoBehaviour
 				verticeRow.Add (newVertice);
 				uvsRow.Add (uv);
 
-				bool buildTriangles = i > 0 && j > 0;
-				Quad quad = terrain.BuildQuadForGrid(buildTriangles, segmentsCountX +1, verticeCount);
-				if (quad != null) {
-					row.Add (quad);
-				}
 			}
-			terrain.addRow (row, verticeRow, uvsRow);
+			terrain.addRow (verticeRow, uvsRow);
 		}
 			
 		Mesh mesh = terrain.UpdateMesh ();
@@ -86,17 +78,21 @@ public abstract class ProcTerrain : MonoBehaviour
 			segmentsCountZ--;
 			this.terrain.removeRow ();
 			GetComponent<MeshFilter> ().sharedMesh = terrain.UpdateMesh ();
+		} else if (Input.GetKey ("right")) {
+			this.expandInXDirection ();
+		} else if (Input.GetKey ("left")) {
+			segmentsCountX--;
+			this.terrain.removeColumn ();
+			GetComponent<MeshFilter> ().sharedMesh = terrain.UpdateMesh ();
 		}
 	}
 
 	private void expandInZDirection(){
 		segmentsCountZ++;
-		int verticeCount = terrain.meshVertices.Count;
 
 		float z = segmentSizeZ * segmentsCountZ;
 		float v = (1.0f / segmentsCountZ) * segmentsCountZ;
 
-		List<Quad> row = new List<Quad> ();
 		List<Vector3> verticeRow = new List<Vector3> ();
 		List<Vector2> uvsRow = new List<Vector2> ();
 
@@ -109,16 +105,36 @@ public abstract class ProcTerrain : MonoBehaviour
 
 			verticeRow.Add (newVertice);
 			uvsRow.Add (uv);
-			verticeCount++;
-
-			Quad quad = terrain.BuildQuadForGrid (i>0, segmentsCountX + 1, verticeCount);
-			if (quad != null) {
-				row.Add (quad);
-			}
 		}
 
-		terrain.addRow (row, verticeRow, uvsRow);
+		terrain.addRow (verticeRow, uvsRow);
+		GetComponent<MeshFilter> ().sharedMesh = terrain.UpdateMesh ();
 
+	}
+
+	private void expandInXDirection(){
+		segmentsCountX++;
+		Debug.Log ("Expand X to " + segmentsCountX);
+
+		float x = segmentSizeX * segmentsCountX;
+		float u = (1.0f / segmentsCountX) * segmentsCountX;
+
+		List<Vector3> verticeColumn = new List<Vector3> ();
+		List<Vector2> uvsColumn = new List<Vector2> ();
+
+		for (int i = 0; i <= segmentsCountZ; i++) {
+			float z = segmentSizeZ * i;
+			float v = (1.0f / segmentsCountZ) * i;
+
+			Vector3 newVertice = new Vector3 (x, GetY (x, z), z);
+			Vector2 uv = new Vector2 (u, v);
+
+			verticeColumn.Add (newVertice);
+			uvsColumn.Add (uv);
+		
+		}
+
+		terrain.addColumn (verticeColumn, uvsColumn);
 		GetComponent<MeshFilter> ().sharedMesh = terrain.UpdateMesh ();
 
 	}
