@@ -18,6 +18,8 @@ public abstract class ProcTerrain : MonoBehaviour
 	private Mesh mesh;
 	public float segmentSizeX = 2f;
 	public float segmentSizeZ = 2f;
+	private float segmentSizeXBase;
+	private float segmentSizeZBase;
 
 	private Terrain terrain;
 	private GameObject controller;
@@ -33,21 +35,21 @@ public abstract class ProcTerrain : MonoBehaviour
 
 
 	protected virtual void Start() {
+		segmentSizeXBase = segmentSizeX;
+		segmentSizeZBase = segmentSizeZ;
 		controller = GameObject.Find ("Controller");
-		determineTerrainProperties ();
 		createTerrain ();
 	}
 
-	private void determineTerrainProperties(){
-		controllerPosition = controller.transform.position;
-		segmentsCountZ = (int) (controllerPosition.z / (segmentSizeZ-0.1));
-		segmentsCountX = (int) (controllerPosition.x / (segmentSizeX-0.1));
-	}
+
 
 
 
 	private void createTerrain() {
-		
+		controllerPosition = controller.transform.position;
+		segmentsCountZ = (int) (controllerPosition.z / (segmentSizeZ-0.2));
+		segmentsCountX = (int) (controllerPosition.x / (segmentSizeX-0.2));
+
 		terrain = new Terrain (segmentsCountX+1);
 
 		for (int i = 0; i <= segmentsCountZ; i++) {
@@ -85,6 +87,12 @@ public abstract class ProcTerrain : MonoBehaviour
 
 		
 	void Update(){
+
+		if (segmentSizeXBase != segmentSizeX || segmentSizeZBase != segmentSizeZ) {
+			segmentSizeXBase = segmentSizeX;
+			segmentSizeZBase = segmentSizeZ;
+			createTerrain ();
+		}
 		Vector3 controllerNewPosition = controller.transform.position;
 
 		float newZ = controllerNewPosition.z;
@@ -92,11 +100,13 @@ public abstract class ProcTerrain : MonoBehaviour
 
 		if(newZ-controllerPosition.z > (3*segmentSizeZ/4)){
 			expandInZDirection ();
+			segmentSizeZBase = segmentSizeZ;
 			controllerPosition = controllerNewPosition;
 		} 
 
 		if (controllerPosition.z - newZ > (3*segmentSizeZ/4)) {
 			segmentsCountZ--;
+			segmentSizeZBase = segmentSizeZ;
 			this.terrain.removeRow ();
 			GetComponent<MeshFilter> ().sharedMesh = terrain.UpdateMesh ();
 			controllerPosition = controllerNewPosition;
@@ -104,11 +114,13 @@ public abstract class ProcTerrain : MonoBehaviour
 
 		if (newX - controllerPosition.x > (3*segmentSizeX/4)) {
 			this.expandInXDirection ();
+			segmentSizeXBase = segmentSizeX;
 			controllerPosition = controllerNewPosition;
 		}
 
 		if (controllerPosition.x - newX > (3*segmentSizeX/4)) {
 			segmentsCountX--;
+			segmentSizeXBase = segmentSizeX;
 			this.terrain.removeColumn ();
 			GetComponent<MeshFilter> ().sharedMesh = terrain.UpdateMesh ();
 			controllerPosition = controllerNewPosition;
