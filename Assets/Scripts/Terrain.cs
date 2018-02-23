@@ -21,13 +21,15 @@ public class Terrain
 	public void addRow( List<Vector3> verticeRow, List<Vector2> uvsRow){
 		this.rowsNumber++;
 		this.meshVertices.AddRange (verticeRow);
+		this.meshUvs.AddRange (uvsRow);
+
 	}
 
 	public void addColumn(List<Vector3> verticeColumn, List<Vector2> uvsColumn) {
 		if (verticeColumn.Count == this.rowsNumber) {
 			for (int i = 0; i < this.rowsNumber; i++) {
 				int insertPosition = (i * this.columnsNumber) + (this.columnsNumber + i);
-				Debug.Log ("Inserting " + i + " at position " + insertPosition);
+//				Debug.Log ("Inserting " + i + " at position " + insertPosition);
 				this.meshVertices.Insert (insertPosition, verticeColumn [i]);
 			}
 			this.columnsNumber++;
@@ -39,7 +41,7 @@ public class Terrain
 	public void removeColumn(){
 		for (int i = this.rowsNumber; i > 0; i--) {
 			int removePosition = (i * this.columnsNumber) -1 ;
-			Debug.Log ("Removing column " + this.columnsNumber + " at position " + removePosition + " in row " + i);
+//			Debug.Log ("Removing column " + this.columnsNumber + " at position " + removePosition + " in row " + i);
 			this.meshVertices.RemoveAt (removePosition);
 		}
 		this.columnsNumber--;
@@ -59,7 +61,7 @@ public class Terrain
 				int index1 = baseIndex - 1;
 				int index2 = baseIndex - this.columnsNumber;
 				int index3 = baseIndex - this.columnsNumber - 1;
-				Debug.Log ("Indexes " + index0 + " " + index1 + " " + index2 + " " + index3);
+//				Debug.Log ("Indexes " + index0 + " " + index1 + " " + index2 + " " + index3);
 				int[] triangle1 = { index0, index2, index1 };
 				this.meshTriangles.AddRange(triangle1);
 				int[] triangle2 = { index2, index3, index1 };
@@ -74,7 +76,7 @@ public class Terrain
 
 		this.BuildMeshTriangles ();
 		Mesh newMesh = new Mesh ();
-		Debug.Log ("Vertices: " + meshVertices.Count + " Triangles " + meshTriangles.Count);
+//		Debug.Log ("Vertices: " + meshVertices.Count + " Triangles " + meshTriangles.Count);
 		newMesh.vertices = meshVertices.ToArray();
 		newMesh.triangles = meshTriangles.ToArray ();
 

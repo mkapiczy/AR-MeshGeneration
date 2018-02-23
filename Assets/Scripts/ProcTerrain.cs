@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public abstract class ProcTerrain : MonoBehaviour
 {
 	/// The maximum height of the terrain.
-	protected float m_Height = 1.0f;
+	protected float m_Height = 10.0f;
 	
 	/// The number of mesh segments (in one dimension) of the terrain.
 	protected int segmentsCountX = 4;
@@ -16,10 +16,13 @@ public abstract class ProcTerrain : MonoBehaviour
 	protected abstract float GetY(float x, float z);
 
 	private Mesh mesh;
-	private float segmentSizeX = 0.5f;
-	private float segmentSizeZ = 0.5f;
+	public float segmentSizeX = 2f;
+	public float segmentSizeZ = 2f;
 
 	private Terrain terrain;
+	private GameObject controller;
+
+	private Vector3 controllerPosition;
 
 	public Vector3 GetWorldPosition(float xPosition, float zPosition, float yOffset) {
 		Vector3 localGroundPos = transform.worldToLocalMatrix.MultiplyPoint3x4(new Vector3(xPosition, 0.0f, zPosition));
@@ -30,8 +33,18 @@ public abstract class ProcTerrain : MonoBehaviour
 
 
 	protected virtual void Start() {
+		controller = GameObject.Find ("Controller");
+		determineTerrainProperties ();
 		createTerrain ();
 	}
+
+	private void determineTerrainProperties(){
+		controllerPosition = controller.transform.position;
+		segmentsCountZ = (int) (controllerPosition.z / (segmentSizeZ-0.1));
+		segmentsCountX = (int) (controllerPosition.x / (segmentSizeX-0.1));
+	}
+
+
 
 	private void createTerrain() {
 		
@@ -72,19 +85,51 @@ public abstract class ProcTerrain : MonoBehaviour
 
 		
 	void Update(){
-		if (Input.GetKey ("up")) {
+		Vector3 controllerNewPosition = controller.transform.position;
+
+		float newZ = controllerNewPosition.z;
+		float newX = controllerNewPosition.x;
+
+		if(newZ-controllerPosition.z > (3*segmentSizeZ/4)){
 			expandInZDirection ();
-		} else if (Input.GetKey ("down")) {
+			controllerPosition = controllerNewPosition;
+		} 
+
+		if (controllerPosition.z - newZ > (3*segmentSizeZ/4)) {
 			segmentsCountZ--;
 			this.terrain.removeRow ();
 			GetComponent<MeshFilter> ().sharedMesh = terrain.UpdateMesh ();
-		} else if (Input.GetKey ("right")) {
+			controllerPosition = controllerNewPosition;
+		}
+
+		if (newX - controllerPosition.x > (3*segmentSizeX/4)) {
 			this.expandInXDirection ();
-		} else if (Input.GetKey ("left")) {
+			controllerPosition = controllerNewPosition;
+		}
+
+		if (controllerPosition.x - newX > (3*segmentSizeX/4)) {
 			segmentsCountX--;
 			this.terrain.removeColumn ();
 			GetComponent<MeshFilter> ().sharedMesh = terrain.UpdateMesh ();
+			controllerPosition = controllerNewPosition;
 		}
+
+
+
+//		if (Input.GetKey ("up")) {
+//			expandInZDirection ();
+//		} else if (Input.GetKey ("down")) {
+//			segmentsCountZ--;
+//			this.terrain.removeRow ();
+//			GetComponent<MeshFilter> ().sharedMesh = terrain.UpdateMesh ();
+//		} else if (Input.GetKey ("right")) {
+//			this.expandInXDirection ();
+//		} else if (Input.GetKey ("left")) {
+//			segmentsCountX--;
+//			this.terrain.removeColumn ();
+//			GetComponent<MeshFilter> ().sharedMesh = terrain.UpdateMesh ();
+//		}
+
 	}
 
 	private void expandInZDirection(){
